@@ -4,7 +4,8 @@ body {
     font-size: 1em;
     line-height: 1.6;
     text-align: justify;
-    margin: 1em;
+    margin: 0;
+    padding: 0;
     color: #000;
 }
 
@@ -96,6 +97,7 @@ td,
 th {
     border: 1px solid #999;
     padding: 0.5em;
+    text-align: left;
 }
 
 /* Optional: highlight */
