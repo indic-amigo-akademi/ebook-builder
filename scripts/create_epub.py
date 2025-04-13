@@ -53,7 +53,7 @@ def get_credits(data):
     return credit_str
 
 
-def get_epub_html_from_xml(xml_path, title=None, data=None):
+def get_epub_html_from_xml(xml_path, title=None, uid=None, data=None):
     with open(xml_path, "r", encoding="utf-8") as file:
         content = file.read()
 
@@ -61,10 +61,16 @@ def get_epub_html_from_xml(xml_path, title=None, data=None):
         content = content.format(**data)
 
     filename = xml_path.split(os.path.sep)[-1].split(".")[0] + ".xhtml"
-    return epub.EpubHtml(title=title, content=content, file_name=filename)
+    return epub.EpubHtml(title=title, content=content, file_name=filename, uid=uid)
 
 
 def create_book(data, contents):
+    filename = os.path.join("output", data.get("filename", "book.epub"))
+    # Check if the file already exists
+    if os.path.exists(filename):
+        print(f"File {filename} already exists. Skipping.")
+        return
+
     lang = data.get("lang", "en")
     title = data.get("title", "Book Title")
     author = data.get("author", "Author Name")
@@ -78,8 +84,6 @@ def create_book(data, contents):
     book.set_language(lang)
     book.add_author(author)
 
-    filename = os.path.join("output", data.get("filename", "book.epub"))
-
     # Add cover image if provided
     cover_image = data.get("cover")
     if cover_image:
@@ -92,13 +96,16 @@ def create_book(data, contents):
                 )
             )
         cover_item = epub.EpubCoverHtml(
-            file_name="cover.xhtml", image_name="cover.jpg", title=title
+            file_name="cover.xhtml", image_name="cover.jpg", title=title, uid="00000_cover"
         )
         book.add_item(cover_item)
 
     # Get Copyright HTML
     copyright_item = get_epub_html_from_xml(
-        os.path.join("partials", "copyright.html"), f"{i18n[lang]['copyright']}: {title}", data
+        os.path.join("partials", "copyright.html"),
+        f"{i18n[lang]['copyright']}: {title}",
+        data=data,
+        uid="00001_copyright",
     )
     book.add_item(copyright_item)
 
@@ -115,6 +122,7 @@ def create_book(data, contents):
             lang=lang,
             content=str(soup),
             file_name="ch_{:05d}.xhtml".format(i),
+            uid="{:05d}_chapter".format(i+2),
         )
         chapters.append(chapter)
         book.add_item(chapter)
@@ -158,6 +166,7 @@ def create_book(data, contents):
     book.add_item(nav)
 
     epub.write_epub(filename, book, {})
+    print(f"Created {yaml_data['filename']}.")
 
 
 if __name__ == "__main__":
@@ -174,5 +183,4 @@ if __name__ == "__main__":
             # Parse the Markdown file with YAML front matter
             yaml_data, chapters_html = parse_markdown_with_yaml(path)
             create_book(yaml_data, chapters_html)
-            print(f"Created {yaml_data['filename']}.")
     print("All books have been created.")
