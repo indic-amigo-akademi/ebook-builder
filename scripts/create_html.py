@@ -1,6 +1,7 @@
 import os
 from utils import parse_markdown_with_yaml
 
+SUB_URL = "ebook-builder/"
 
 def create_book_html(data, contents, author):
     folder = os.path.join("build", author)
@@ -111,6 +112,7 @@ if __name__ == "__main__":
                     "title": yaml_data.get("title", "Book Title"),
                     "author": yaml_data.get("author", "Author Name"),
                     "filename": "/"
+                    + SUB_URL
                     + author
                     + "/"
                     + yaml_data.get("filename", "book.html"),
@@ -122,7 +124,7 @@ if __name__ == "__main__":
         authornames.append(
             {
                 "author": booknames[0]["author"],
-                "filename": "/" + author + "/index.html",
+                "filename": "/" + SUB_URL + author + "/index.html",
             }
         )
 
