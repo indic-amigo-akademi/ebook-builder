@@ -22,8 +22,10 @@ def create_book_html(data, contents, author):
 
     # Create the HTML file for the book
     filename = os.path.join(folder, data.get("filename", "book.html"))
-    with open(filename, "w") as f:
+    try:
         f.write(html_content)
+    except Exception as e:
+        print(f"Error writing to file: {e}")
     print(f"Created {filename}")
 
 
