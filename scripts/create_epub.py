@@ -1,56 +1,10 @@
 from ebooklib import epub
-import markdown
-import yaml
+from utils import parse_markdown_with_yaml
 import os
 from bs4 import BeautifulSoup
 from datetime import datetime
 from i18n_constants import i18n
 
-
-def parse_markdown_with_yaml(file_path):
-    with open(file_path, "r", encoding="utf-8") as file:
-        content = file.read()
-
-    # Split YAML front matter and Markdown content
-    if content.startswith("---"):
-        _, yaml_part, markdown_part = content.split("---", 2)
-    else:
-        yaml_part = ""
-        markdown_part = content
-
-    # Parse YAML
-    yaml_data = yaml.safe_load(yaml_part)
-    yaml_data["filename"] = file_path.split(os.path.sep)[-1].split(".")[0] + ".epub"
-    page_break = yaml_data.get("page_break", "<!-- pagebreak -->")
-    yaml_data["credits"] = get_credits(yaml_data)
-
-    chapters_md = markdown_part.split(page_break)
-
-    chapters_html = []
-
-    for chapter_md in chapters_md:
-        if chapter_md.strip() == "":
-            continue
-        # Convert Markdown to HTML
-        chapters_html.append(
-            markdown.markdown(
-                chapter_md,
-                extensions=["footnotes"],
-            )
-        )
-
-    return yaml_data, chapters_html
-
-
-def get_credits(data):
-    credit_str = ""
-    for credit in data.get("credits", []):
-        if isinstance(credit, dict):
-            credit_str += f"<a href='{credit.get('url', '')}'>{credit.get('name', '')}</a> - {credit.get('role', '')}<br>"
-        elif isinstance(credit, str):
-            credit_str += f"{credit}<br>"
-    credit_str = credit_str.strip()
-    return credit_str
 
 
 def get_epub_html_from_xml(xml_path, title=None, uid=None, data=None):
@@ -64,7 +18,7 @@ def get_epub_html_from_xml(xml_path, title=None, uid=None, data=None):
     return epub.EpubHtml(title=title, content=content, file_name=filename, uid=uid)
 
 
-def create_book(data, contents):
+def create_book_epub(data, contents):
     filename = os.path.join("output", data.get("filename", "book.epub"))
     # Check if the file already exists
     if os.path.exists(filename):
@@ -182,5 +136,5 @@ if __name__ == "__main__":
             print(f"Processing {path}...")
             # Parse the Markdown file with YAML front matter
             yaml_data, chapters_html = parse_markdown_with_yaml(path)
-            create_book(yaml_data, chapters_html)
+            create_book_epub(yaml_data, chapters_html)
     print("All books have been created.")
