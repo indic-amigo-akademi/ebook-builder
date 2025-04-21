@@ -13,7 +13,9 @@ def get_credits(data):
     return credit_str
 
 
-def parse_markdown_with_yaml(file_path, extension=".epub"):
+DEFAULT_EXTENSION = ".epub"
+
+def parse_markdown_with_yaml(file_path, extension=DEFAULT_EXTENSION):
     with open(file_path, "r", encoding="utf-8") as file:
         content = file.read()
 
