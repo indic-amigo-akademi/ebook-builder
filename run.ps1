@@ -8,3 +8,4 @@ if ($setup) {
 }
 
 python scripts/create_epub.py
+python scripts/create_html.py --dev
