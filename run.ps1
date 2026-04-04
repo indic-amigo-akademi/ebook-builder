@@ -1,5 +1,7 @@
 Param(
-    [bool]$setup = $false
+    [bool]$setup = $false,
+    [bool]$exec_epub = $true,
+    [bool]$exec_html = $true
 )
 
 if ($setup) {
@@ -7,5 +9,10 @@ if ($setup) {
     pip install -r requirements.txt
 }
 
-python scripts/create_epub.py
-python scripts/create_html.py --dev
+if ($exec_epub) {
+    python scripts/create_epub.py
+}
+
+if ($exec_html) {
+    python scripts/create_html.py --dev
+}

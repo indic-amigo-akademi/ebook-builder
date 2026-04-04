@@ -141,6 +141,7 @@ if __name__ == "__main__":
                     + yaml_data.get("filename", "book.html"),
                 }
             )
+        booknames.sort(key=lambda x: x["filename"])
 
         # Create the author HTML file
         create_author_html(booknames)
