@@ -25,6 +25,7 @@ def create_book_html(data, contents, author):
         lang=data.get("lang", "en"),
         content=contents,
         header_content=f"<a href='{url}'>&larr; Back</a>",
+        sub_url="/" + SUB_URL,
     )
 
     # Create the HTML file for the book
@@ -56,6 +57,7 @@ def create_author_html(booknames):
         lang="en",
         content=contents,
         header_content=f"<a href='{url}'>&larr; Back</a>",
+        sub_url="/" + SUB_URL,
     )
 
     # Create the HTML file for the book
@@ -84,6 +86,7 @@ def create_main_html(authornames):
         lang="en",
         content=contents,
         header_content="",
+        sub_url="/" + SUB_URL,
     )
     # Create the HTML file for the book
     filename = os.path.join(folder, "index.html")
