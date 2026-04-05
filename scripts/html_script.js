@@ -3,13 +3,27 @@ const headerEle = document.querySelector('header');
 const footerEle = document.querySelector('footer');
 let currentIndex = 0;
 
-if (pageEles) {
-    pageEles[currentIndex].classList.add('active');
+function updatePageCount (currentIndex) {
     const pageCount = pageEles.length;
+    const currentPage = currentIndex + 1;
+    const pageCountEle = document.querySelector('.page-count');
+    pageCountEle.innerHTML = `Page ${currentPage} of ${pageCount}`;
+}
 
-    const nextPageEle = document.createElement('a');
-    const prevPageEle = document.createElement('a');
+
+if (pageEles) {
+    // extract page number from url
+    const urlParams = new URLSearchParams(window.location.search);
+    const page = urlParams.get('page');
+    if (page) {
+        currentIndex = page - 1;
+    }
+    pageEles[currentIndex].classList.add('active');
+
+    const nextPageEle = document.createElement('button');
+    const prevPageEle = document.createElement('button');
     const pageCountEle = document.createElement('span');
+    pageCountEle.classList.add('page-count');
 
 
     prevPageEle.classList.add('prev');
@@ -17,7 +31,7 @@ if (pageEles) {
 
     nextPageEle.classList.add('next');
     nextPageEle.innerHTML = 'Next&gt;';
-    pageCountEle.innerHTML = `Page 1 of ${pageCount}`;
+
 
     nextPageEle.addEventListener('click', () => {
         const activePage = document.querySelector('.active');
@@ -26,7 +40,8 @@ if (pageEles) {
             activePage.classList.remove('active');
             nextPage.classList.add('active');
             currentIndex = currentIndex + 1;
-            pageCountEle.innerHTML = `Page ${currentIndex + 1} of ${pageCount}`;
+            updatePageCount(currentIndex);
+            history.pushState(null, null, `?page=${currentIndex + 1}`);
         }
     });
 
@@ -37,11 +52,14 @@ if (pageEles) {
             activePage.classList.remove('active');
             prevPage.classList.add('active');
             currentIndex = currentIndex - 1;
-            pageCountEle.innerHTML = `Page ${currentIndex + 1} of ${pageCount}`;
+            updatePageCount(currentIndex);
+            history.pushState(null, null, `?page=${currentIndex + 1}`);
         }
     });
 
     footerEle.appendChild(prevPageEle);
     footerEle.appendChild(pageCountEle);
     footerEle.appendChild(nextPageEle);
+
+    updatePageCount(currentIndex);
 }

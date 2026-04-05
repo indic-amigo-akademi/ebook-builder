@@ -13,6 +13,8 @@ main {
     padding: 0.5rem;
     max-height: calc(100vh - 7rem);
     overflow-y: auto;
+    background-color: #f8f8f8;
+    border: 1px solid #ccc;
 }
 
 header,
