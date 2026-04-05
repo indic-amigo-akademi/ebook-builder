@@ -7,7 +7,7 @@ from i18n_constants import i18n
 
 
 
-def get_epub_html_from_xml(xml_path, title=None, uid=None, data=None):
+def get_epub_html_from_xml(xml_path, title="", uid=None, data=None):
     with open(xml_path, "r", encoding="utf-8") as file:
         content = file.read()
 
@@ -67,10 +67,11 @@ def create_book_epub(data, contents):
 
     for i, chapter_content in enumerate(contents):
         soup = BeautifulSoup(chapter_content, "lxml")
+        h2 = soup.find("h2")
         chapter = epub.EpubHtml(
             title=(
-                soup.find("h2").text
-                if soup.find("h2")
+                h2.text
+                if h2
                 else "{} {}".format(i18n[lang]["chapter"], i + 1)
             ),
             lang=lang,
@@ -82,12 +83,10 @@ def create_book_epub(data, contents):
         book.add_item(chapter)
 
     # define Table Of Contents
-    book.toc = tuple(
-        [
-            epub.Link(chapter.get_name(), chapter.title, chapter.title)
-            for chapter in chapters
-        ]
-    )
+    book.toc = [
+        epub.Link(chapter.get_name(), chapter.title, chapter.title)
+        for chapter in chapters
+    ]
 
     with open("styles/style.css", "r", encoding="utf-8") as file:
         style = file.read()
