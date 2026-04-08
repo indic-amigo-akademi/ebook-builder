@@ -159,15 +159,26 @@ if __name__ == "__main__":
     if not os.path.exists("build/styles"):
         os.makedirs("build/styles")
     shutil.copyfile(
-        os.path.join("styles", "html_style.css"),
+        os.path.join("assets", "styles", "style.css"),
         os.path.join("build", "styles", "style.css"),
     )
 
+    # Copy scripts
     if not os.path.exists("build/scripts"):
         os.makedirs("build/scripts")
     shutil.copyfile(
-        os.path.join("scripts", "html_script.js"),
+        os.path.join("assets", "scripts", "script.js"),
         os.path.join("build", "scripts", "script.js"),
     )
 
+    # Copy favicon
+    shutil.copytree(
+        os.path.join("assets", "favicon"),
+        os.path.join("build", "favicon")
+    )
+    shutil.copyfile(
+        os.path.join("assets", "manifest.json"),
+        os.path.join("build", "manifest.json"),
+    )
+    
     print("All books have been processed.")
