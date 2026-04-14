@@ -3,7 +3,7 @@ import shutil
 from utils import parse_markdown_with_yaml
 from argparse import ArgumentParser
 
-SUB_URL = "ebook-builder/"
+SUB_URL = "book-reader/"
 
 
 def create_book_html(data, contents, author):
@@ -103,11 +103,14 @@ if __name__ == "__main__":
 
     parser = ArgumentParser()
     parser.add_argument("--dev", action="store_true")
+    parser.add_argument("--appname", type=str, default="")
 
     args = parser.parse_args()
-
+    
     if args.dev:
         SUB_URL = ""
+    elif args.appname:
+        SUB_URL = args.appname + "/"
 
     # Process all Markdown files in the "books" directory
     authornames = []
