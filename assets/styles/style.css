@@ -9,6 +9,8 @@ body {
 }
 
 main {
+    display: flex;
+    flex-direction: column;
     flex-grow: 1;
     padding: 0.5rem;
     max-height: calc(100vh - 7rem);
@@ -33,7 +35,9 @@ footer {
 }
 
 .page.active {
-    display: initial;
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 100%;
 }
 
 header a,
@@ -56,4 +60,23 @@ footer a {
 .next:hover {
     background-color: #999;
     color: #fff;
+}
+
+/* Cover */
+.cover-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.title-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    flex: 1 1 100%;
+    padding: 1rem;
+    gap: 1rem;
+    background-color: #f8f8f8;
+    border: 1px solid #ccc;
+    margin: 1rem;
 }

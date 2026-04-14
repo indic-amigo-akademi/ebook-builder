@@ -1,6 +1,8 @@
 import os
 import markdown
 import yaml
+from bs4 import BeautifulSoup
+
 
 def get_credits(data):
     credit_str = ""
@@ -13,7 +15,15 @@ def get_credits(data):
     return credit_str
 
 
+def extract_title(md: str) -> str | None:
+    html = markdown.markdown(md)
+    soup = BeautifulSoup(html, "html.parser")
+    heading = soup.find(["h1", "h2", "h3"])
+    return heading.get_text(strip=True) if heading else None
+
+
 DEFAULT_EXTENSION = ".epub"
+
 
 def parse_markdown_with_yaml(file_path, extension=DEFAULT_EXTENSION):
     with open(file_path, "r", encoding="utf-8") as file:
@@ -32,6 +42,7 @@ def parse_markdown_with_yaml(file_path, extension=DEFAULT_EXTENSION):
     page_break = yaml_data.get("page_break", "<!-- pagebreak -->")
     yaml_data["credits"] = get_credits(yaml_data)
 
+    # Remove YAML front matter
     chapters_md = markdown_part.split(page_break)
 
     chapters_html = []
@@ -41,10 +52,13 @@ def parse_markdown_with_yaml(file_path, extension=DEFAULT_EXTENSION):
             continue
         # Convert Markdown to HTML
         chapters_html.append(
-            markdown.markdown(
-                chapter_md,
-                extensions=["footnotes"],
-            )
+            {
+                "title": extract_title(chapter_md),
+                "content": markdown.markdown(
+                    chapter_md,
+                    extensions=["footnotes"],
+                )
+            }
         )
 
     return yaml_data, chapters_html

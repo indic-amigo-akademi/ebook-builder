@@ -106,7 +106,7 @@ if __name__ == "__main__":
     parser.add_argument("--appname", type=str, default="")
 
     args = parser.parse_args()
-    
+
     if args.dev:
         SUB_URL = ""
     elif args.appname:
@@ -124,10 +124,44 @@ if __name__ == "__main__":
             # Parse the Markdown file with YAML front matter
             yaml_data, chapters_html = parse_markdown_with_yaml(path, extension=".html")
 
+            page_counter = 0
             # Create the book HTML content
             chapters_html_content = ""
-            for chapter_html in chapters_html:
-                chapters_html_content += f"<div class='page'>{chapter_html}</div>"
+            # Add cover page if cover image present
+            if yaml_data.get("cover", "") != "":
+                with open(os.path.join("partials", "cover.html")) as f:
+                    cover_html = f.read()
+                cover_html_content = cover_html.format(
+                    cover_image=os.path.join(
+                        "/", SUB_URL, yaml_data.get("cover", "")
+                    )
+                )
+                chapters_html_content += f"<div class='page'>{cover_html_content}</div>"
+                page_counter += 1
+
+            # Add title page
+            with open(os.path.join("partials", "title.html")) as f:
+                title_html = f.read()
+            title_html_content = title_html.format(
+                title=yaml_data.get("title", "Book Title"),
+                author=yaml_data.get("author", "Author Name"),
+                language=yaml_data.get("language", ""),
+                publisher="Indic Amigo Akademia",
+            )
+            chapters_html_content += f"<div class='page'>{title_html_content}</div>"
+            page_counter += 1
+
+            # Add table of contents
+            toc_html = "<h1>Table of Contents</h1><ul>"
+            page_counter += 1
+            for chapter in chapters_html:
+                toc_html += f"<li><a href='/{SUB_URL}{author}/{yaml_data.get('filename', 'book.html').replace('.html', '')}?page={page_counter+1}'>{chapter['title']}</a></li>"
+                page_counter += 1
+            toc_html += "</ul>"
+            chapters_html_content += f"<div class='page'>{toc_html}</div>"
+
+            for chapter in chapters_html:
+                chapters_html_content += f"<div class='page'>{chapter['content']}</div>"
             create_book_html(
                 yaml_data,
                 chapters_html_content,
@@ -144,6 +178,9 @@ if __name__ == "__main__":
                     + yaml_data.get("filename", "book.html"),
                 }
             )
+
+        if len(booknames) == 0:
+            continue
         booknames.sort(key=lambda x: x["filename"])
 
         # Create the author HTML file
@@ -177,11 +214,21 @@ if __name__ == "__main__":
     # Copy favicon
     shutil.copytree(
         os.path.join("assets", "favicon"),
-        os.path.join("build", "favicon")
+        os.path.join("build", "favicon"),
+        dirs_exist_ok=True,
     )
     shutil.copyfile(
         os.path.join("assets", "manifest.json"),
         os.path.join("build", "manifest.json"),
     )
-    
+
+    # Copy images
+    if not os.path.exists("build/images"):
+        os.makedirs("build/images")
+    shutil.copytree(
+        os.path.join("assets", "images"),
+        os.path.join("build", "images"),
+        dirs_exist_ok=True,
+    )
+
     print("All books have been processed.")
