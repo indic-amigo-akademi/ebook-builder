@@ -1,114 +1,82 @@
-/* Base HTML Styles */
 body {
-    font-family: "Noto Serif Bengali", "SolaimanLipi", "Kalpurush", serif;
-    font-size: 1em;
-    line-height: 1.6;
-    text-align: justify;
     margin: 0;
     padding: 0;
-    color: #000;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    max-width: 800px;
+    margin: 0 auto;
 }
 
-/* Headings */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-    font-family: "Noto Serif Bengali", "SolaimanLipi", serif;
-    margin-top: 1.5em;
-    margin-bottom: 0.5em;
-    font-weight: bold;
-    color: #222;
+main {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    padding: 0.5rem;
+    max-height: calc(100vh - 7rem);
+    overflow-y: auto;
+    background-color: #f8f8f8;
+    border: 1px solid #ccc;
 }
 
-h1 {
-    font-size: 1.8em;
+header,
+footer {
+    display: flex;
+    flex-shrink: 0;
+    padding: 0.5rem;
     text-align: center;
+    gap: 0.5rem;
+    justify-content: space-between;
+    align-items: center;
 }
 
-h2 {
-    font-size: 1.5em;
+.page {
+    display: none;
 }
 
-h3 {
-    font-size: 1.2em;
+.page.active {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 100%;
 }
 
-/* Paragraphs */
-p {
-    margin: 0.8em 0;
-    widows: 2;
-    orphans: 2;
+header a,
+footer a {
+    text-decoration: none;
+    color: inherit;
 }
 
-/* Drop caps for first paragraph in chapter */
-p:first-letter {
-    float: left;
-    font-size: 2em;
-    line-height: 1;
-    padding-right: 0.1em;
-    padding-left: 0.05em;
+.prev,
+.next {
+    cursor: pointer;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    background-color: #ccc;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
 }
 
-/* Blockquotes */
-blockquote {
-    margin: 1em 2em;
-    font-style: italic;
-    color: #444;
+.prev:hover,
+.next:hover {
+    background-color: #999;
+    color: #fff;
 }
 
-/* Chapter Titles */
-.chapter-title {
-    font-size: 1.6em;
-    text-align: center;
-    margin-top: 2em;
-    margin-bottom: 1em;
+/* Cover */
+.cover-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
-
-/* Centered Elements */
-.center {
-    text-align: center;
-}
-
-/* Page breaks (use in EPUB HTML content) */
-.pagebreak {
-    page-break-after: always;
-    display: block;
-    margin-bottom: 2em;
-}
-
-/* Verse / Poetry */
-.verse {
-    margin-left: 2em;
-    white-space: pre-line;
-    font-style: italic;
-}
-
-/* Table styling */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 1em 0;
-}
-
-td,
-th {
-    border: 1px solid #999;
-    padding: 0.5em;
-    text-align: left;
-}
-
-/* Optional: highlight */
-.highlight {
-    background-color: #ffffcc;
-}
-
-/* Images */
-img {
-    max-width: 100%;
-    height: auto;
-    display: block;
-    margin: 1em auto;
+.title-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    flex: 1 1 100%;
+    padding: 1rem;
+    gap: 1rem;
+    background-color: #f8f8f8;
+    border: 1px solid #ccc;
+    margin: 1rem;
 }
